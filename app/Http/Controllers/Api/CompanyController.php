@@ -6,24 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CompanyRequest;
 use App\Http\Resources\CompanyResource;
 use App\Models\Company;
+use App\Http\Requests\Company\SearchRequest;
+use App\Repositories\CompanyRepositoryInterface;
 
 class CompanyController extends Controller
 {
+    public function __construct(private CompanyRepositoryInterface $companyRepository)
+    {}
+
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(SearchRequest $request)
     {
-        return CompanyResource::collection(Company::all());
+        $companies = $this->companyRepository->getList($request->validated());
+
+        return CompanyResource::collection($companies);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\ResponsCe
      */
     public function store(CompanyRequest $request)
     {

@@ -5,6 +5,81 @@
         <router-link :to="{ name: 'companies.create' }" class="text-sm font-medium">Create company</router-link>
       </div>
     </div>
+    <div class="flex place-content-end mb-4">
+      <div class="flex-1 py-1 px-2">
+        <input
+          type="text"
+          name="name"
+          id="name"
+          placeholder="Search company name"
+          class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          v-model="params.name"
+        >
+      </div>
+      <div class="flex-1 py-1 px-2">
+        <input
+          type="text"
+          name="email"
+          id="email"
+          placeholder="Search company email"
+          class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          v-model="params.email"
+        >
+      </div>
+      <div class="flex-1 py-1 px-2">
+        <input
+          type="text"
+          name="address"
+          id="address"
+          placeholder="Search company address"
+          class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          v-model="params.address"
+        >
+      </div>
+      <div class="flex-1 py-1 px-2">
+        <input
+          type="text"
+          name="website"
+          id="website"
+          placeholder="Search company website"
+          class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          v-model="params.website"
+        >
+      </div>
+      <div class="py-1 px-2">
+        <button
+          type="button"
+          name="email"
+          id="search"
+          class="bg-purple-500 text-white active:bg-purple-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none ease-linear transition-all duration-150"
+          @click.prevent="search"
+        >
+          Search
+        </button>
+      </div>
+    </div>
+    <div class="flex mb-4">
+      <div class="py-1 px-2">
+        <input
+          type="date"
+          name="f"
+          id="from"
+          placeholder="Search company website"
+          class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          v-model="params.created_from"
+        >
+      </div>
+      <div class="py-1 px-2">
+        <input
+          type="date"
+          name="website"
+          id="to"
+          placeholder="Search company website"
+          class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+          v-model="params.created_to"
+        >
+      </div>
+    </div>
     <table class="min-w-full border divide-y divide-gray-200">
       <thead>
       <tr>
@@ -41,11 +116,11 @@
           </td>
           <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
             <router-link :to="{ name: 'companies.edit', params: { id: item.id } }"
-               class="mr-2 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                         class="mr-2 inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
               Edit
             </router-link>
             <button @click="deleteCompany(item.id)"
-              class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+                    class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
               Delete
             </button>
           </td>
@@ -58,12 +133,22 @@
 
 <script>
 import useCompanies from "../../composables/companies";
-import { onMounted } from "vue";
+import { onMounted, reactive } from "vue";
 
 export default {
   name: "CompanyIndex",
+
   setup() {
     const { companies, getCompanies, destroyCompany } = useCompanies()
+
+    const params = reactive({
+      'name': '',
+      'email': '',
+      'address': '',
+      'website': '',
+      'created_from': '',
+      'created_to': null,
+    })
 
     onMounted(getCompanies)
 
@@ -75,9 +160,15 @@ export default {
       await getCompanies();
     }
 
+    const search = async () => {
+      await getCompanies({ ...params })
+    }
+
     return {
       companies,
-      deleteCompany
+      deleteCompany,
+      search,
+      params
     }
   }
 }
